@@ -38,7 +38,7 @@ func TestLengthOfExact(t *testing.T) {
 		assert.Nil(t, err)
 		assert.False(t, fields.Valid())
 		assert.Equal(t, 1, len(fields))
-		f := fields[0]
+		f := fields.Get(v.f)[0]
 		assert.Equal(t, f.Error(), fmt.Sprintf("%s must have an exact length of %d", v.f, v.n))
 	}
 
@@ -88,7 +88,7 @@ func TestLengthOfLess(t *testing.T) {
 		assert.Nil(t, err)
 		assert.False(t, fields.Valid())
 		assert.Equal(t, 1, len(fields))
-		f := fields[0]
+		f := fields.Get(v.f)[0]
 		assert.Equal(t, f.Error(), fmt.Sprintf("%s must have a length less than or equal to %d", v.f, v.n))
 	}
 
@@ -152,7 +152,7 @@ func TestLengthOfGreater(t *testing.T) {
 		assert.Nil(t, err)
 		assert.False(t, fields.Valid())
 		assert.Equal(t, 1, len(fields))
-		f := fields[0]
+		f := fields.Get(v.f)[0]
 		assert.Equal(t, f.Error(), fmt.Sprintf("%s must have a length greater than or equal to %d", v.f, v.n))
 	}
 
@@ -219,7 +219,7 @@ func TestLengthOfRange(t *testing.T) {
 		assert.Nil(t, err)
 		assert.False(t, fields.Valid())
 		assert.Equal(t, 1, len(fields))
-		f := fields[0]
+		f := fields.Get(v.f)[0]
 		assert.Equal(t, f.Error(), fmt.Sprintf("%s must have a length greater than or equal to %d and less than or equal to %d", v.f, v.n, v.m))
 	}
 
