@@ -265,10 +265,25 @@ func TestLengthOfError(t *testing.T) {
 		V C `length_of:"1"`
 	}
 
+	type E struct {
+		V string `length_of:"1:a"`
+	}
+
+	type F struct {
+		V string `length_of:"a:1"`
+	}
+
+	type G struct {
+		V string `length_of:":"`
+	}
+
 	// a := A{}
 	b := B{}
 	c := C{}
 	d := D{V: C{}}
+	e := E{}
+	f := F{}
+	g := G{}
 
 	val := strut.NewValidator()
 	val.Checks("length_of", Validator)
@@ -281,6 +296,9 @@ func TestLengthOfError(t *testing.T) {
 		{b, `strconv.ParseInt: parsing "a": invalid syntax`},
 		{c, "error: tag: unprocessable value `1:2:`"},
 		{d, `reflect: call of reflect.Value.Len on struct Value`},
+		{e, `strconv.ParseInt: parsing "a": invalid syntax`},
+		{f, `strconv.ParseInt: parsing "a": invalid syntax`},
+		{g, "error: tag: unprocessable value `:`"},
 	} {
 		_, err := val.Validates(v.i)
 		assert.Equal(t, err.Error(), v.e)

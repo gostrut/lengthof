@@ -16,7 +16,11 @@ func Validator(name, tagStr string, vo *reflect.Value) (invalid.Field, error) {
 		return nil, err
 	}
 
-	split := strings.Split(tagStr, ":")
+	var split []string
+	if tagStr != ":" {
+		split = strings.Split(tagStr, ":")
+	}
+
 	switch len(split) {
 	case 1:
 		n, err := parseInt(split[0])
@@ -29,9 +33,15 @@ func Validator(name, tagStr string, vo *reflect.Value) (invalid.Field, error) {
 		}
 
 	case 2:
-		// TODO good solution to handle err, for situations like :n or n:
-		i, _ := parseInt(split[0])
-		n, _ := parseInt(split[1])
+		i, err := parseInt(split[0])
+		if err != nil {
+			return nil, err
+		}
+
+		n, err := parseInt(split[1])
+		if err != nil {
+			return nil, err
+		}
 
 		if i == 0 {
 			if !(z <= n) {
@@ -58,6 +68,13 @@ func Validator(name, tagStr string, vo *reflect.Value) (invalid.Field, error) {
 	return nil, nil
 }
 
+// parseInt is a shortcut for strconv's ParseInt function. This function will
+// not return an error on "" (empty string), it returns 0 for n
 func parseInt(str string) (int64, error) {
-	return strconv.ParseInt(str, 10, 64)
+	n, err := strconv.ParseInt(str, 10, 64)
+	if err != nil && str != "" {
+		return n, err
+	}
+
+	return n, nil
 }
