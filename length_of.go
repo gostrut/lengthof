@@ -19,7 +19,7 @@ func Validator(name, tagStr string, vo *reflect.Value) (invalid.Field, error) {
 	split := strings.Split(tagStr, ":")
 	switch len(split) {
 	case 1:
-		n, err := strconv.ParseInt(split[0], 10, 64)
+		n, err := parseInt(split[0])
 		if err != nil {
 			return nil, err
 		}
@@ -30,8 +30,8 @@ func Validator(name, tagStr string, vo *reflect.Value) (invalid.Field, error) {
 
 	case 2:
 		// TODO good solution to handle err, for situations like :n or n:
-		i, _ := strconv.ParseInt(split[0], 10, 64)
-		n, _ := strconv.ParseInt(split[1], 10, 64)
+		i, _ := parseInt(split[0])
+		n, _ := parseInt(split[1])
 
 		if i == 0 {
 			if !(z <= n) {
@@ -56,4 +56,8 @@ func Validator(name, tagStr string, vo *reflect.Value) (invalid.Field, error) {
 	}
 
 	return nil, nil
+}
+
+func parseInt(str string) (int64, error) {
+	return strconv.ParseInt(str, 10, 64)
 }
