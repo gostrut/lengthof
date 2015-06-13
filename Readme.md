@@ -4,6 +4,10 @@
 
 Validate length of
 
+## Install
+
+    go get gopkg.in/gostrut/lengthof.v1
+
 ## Example
 
     type Person struct {
@@ -11,10 +15,16 @@ Validate length of
     }
 
     val := NewValidator()
-    val.Checks("length_of", lengthof.Validator)
+    val.Add("length_of", lengthof.Validator)
 
     p := Person{Name: "Foo"}
-    fields, err := val.Validates(p)
+    fields, err := val.Check(p)
+    if err != nil {
+      // handle error
+    }
+    if !fields.Valid() {
+      // handle invalid fields
+    }
 
 **Exact**
 
