@@ -1,29 +1,30 @@
 package lengthof
 
-import "fmt"
+import (
+	"fmt"
+)
 
-type iField struct {
-	name    string
-	message string
+type field struct {
+	name string
 }
 
-func (f iField) Name() string {
+func (f field) Name() string {
 	return f.name
 }
 
-func (f iField) Validator() string {
+func (f field) Validator() string {
 	return "LengthOf"
 }
 
-func (f iField) Error() string {
-	panic("iField error() should be not be called directly")
+func (f field) Error() string {
+	panic("field error() should be not be called directly")
 }
 
 // LengthOfExactError .
 type LengthOfExactError struct {
-	iField
-	name string
-	n    int64
+	*field
+
+	n int64
 }
 
 func (e LengthOfExactError) Error() string {
@@ -32,34 +33,38 @@ func (e LengthOfExactError) Error() string {
 
 // LengthOfLessError .
 type LengthOfLessError struct {
-	iField
-	name string
-	n    int64
+	*field
+
+	n int64
 }
 
 func (e LengthOfLessError) Error() string {
-	return fmt.Sprintf("%s must have a length less than or equal to %d", e.name, e.n)
+	return fmt.Sprintf(
+		"%s must have a length less than or equal to %d", e.name, e.n)
 }
 
 // LengthOfGreaterError .
 type LengthOfGreaterError struct {
-	iField
-	name string
-	n    int64
+	*field
+
+	n int64
 }
 
 func (e LengthOfGreaterError) Error() string {
-	return fmt.Sprintf("%s must have a length greater than or equal to %d", e.name, e.n)
+	return fmt.Sprintf(
+		"%s must have a length greater than or equal to %d", e.name, e.n)
 }
 
 // LengthOfRangeError .
 type LengthOfRangeError struct {
-	iField
-	name string
-	n    int64
-	m    int64
+	*field
+
+	n int64
+	m int64
 }
 
 func (e LengthOfRangeError) Error() string {
-	return fmt.Sprintf("%s must have a length greater than or equal to %d and less than or equal to %d", e.name, e.n, e.m)
+	return fmt.Sprintf(
+		"%s must have a length greater than or equal to %d and less than or "+
+			"equal to %d", e.name, e.n, e.m)
 }

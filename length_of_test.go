@@ -1,9 +1,12 @@
 package lengthof
 
-import "fmt"
-import "testing"
-import "github.com/nowk/assert"
-import "github.com/gostrut/strut"
+import (
+	"fmt"
+	"testing"
+
+	"gopkg.in/gostrut/strut.v1"
+	"gopkg.in/nowk/assert.v2"
+)
 
 func TestLengthOfExact(t *testing.T) {
 	type Address struct {
@@ -22,7 +25,7 @@ func TestLengthOfExact(t *testing.T) {
 	empty := Person{}
 
 	val := strut.NewValidator()
-	val.Checks("length_of", Validator)
+	val.Add("length_of", Validator)
 
 	for _, v := range []struct {
 		f string
@@ -34,7 +37,7 @@ func TestLengthOfExact(t *testing.T) {
 		{"Addresses", 2, b},
 		{"Addresses", 2, empty},
 	} {
-		fields, err := val.Validates(v.i)
+		fields, err := val.Check(v.i)
 		assert.Nil(t, err)
 		assert.False(t, fields.Valid())
 		assert.Equal(t, 1, len(fields))
@@ -53,7 +56,7 @@ func TestLengthOfExact(t *testing.T) {
 		{c},
 		{d},
 	} {
-		fields, err := val.Validates(v.i)
+		fields, err := val.Check(v.i)
 		assert.Nil(t, err)
 		assert.True(t, fields.Valid())
 	}
@@ -74,7 +77,7 @@ func TestLengthOfLess(t *testing.T) {
 	}
 
 	val := strut.NewValidator()
-	val.Checks("length_of", Validator)
+	val.Add("length_of", Validator)
 
 	for _, v := range []struct {
 		f string
@@ -84,7 +87,7 @@ func TestLengthOfLess(t *testing.T) {
 		{"Street", 3, a},
 		{"Addresses", 2, b},
 	} {
-		fields, err := val.Validates(v.i)
+		fields, err := val.Check(v.i)
 		assert.Nil(t, err)
 		assert.False(t, fields.Valid())
 		assert.Equal(t, 1, len(fields))
@@ -113,7 +116,7 @@ func TestLengthOfLess(t *testing.T) {
 		{blank},
 		{empty},
 	} {
-		fields, err := val.Validates(v.i)
+		fields, err := val.Check(v.i)
 		assert.Nil(t, err)
 		assert.True(t, fields.Valid())
 	}
@@ -136,7 +139,7 @@ func TestLengthOfGreater(t *testing.T) {
 	empty := Person{}
 
 	val := strut.NewValidator()
-	val.Checks("length_of", Validator)
+	val.Add("length_of", Validator)
 
 	for _, v := range []struct {
 		f string
@@ -148,7 +151,7 @@ func TestLengthOfGreater(t *testing.T) {
 		{"Addresses", 2, b},
 		{"Addresses", 2, empty},
 	} {
-		fields, err := val.Validates(v.i)
+		fields, err := val.Check(v.i)
 		assert.Nil(t, err)
 		assert.False(t, fields.Valid())
 		assert.Equal(t, 1, len(fields))
@@ -173,7 +176,7 @@ func TestLengthOfGreater(t *testing.T) {
 		{e},
 		{f},
 	} {
-		fields, err := val.Validates(v.i)
+		fields, err := val.Check(v.i)
 		assert.Nil(t, err)
 		assert.True(t, fields.Valid())
 	}
@@ -200,7 +203,7 @@ func TestLengthOfRange(t *testing.T) {
 	empty := Person{}
 
 	val := strut.NewValidator()
-	val.Checks("length_of", Validator)
+	val.Add("length_of", Validator)
 
 	for _, v := range []struct {
 		f string
@@ -215,7 +218,7 @@ func TestLengthOfRange(t *testing.T) {
 		{"Addresses", 2, 3, d},
 		{"Addresses", 2, 3, empty},
 	} {
-		fields, err := val.Validates(v.i)
+		fields, err := val.Check(v.i)
 		assert.Nil(t, err)
 		assert.False(t, fields.Valid())
 		assert.Equal(t, 1, len(fields))
@@ -242,7 +245,7 @@ func TestLengthOfRange(t *testing.T) {
 		{h},
 		{i},
 	} {
-		fields, err := val.Validates(v.i)
+		fields, err := val.Check(v.i)
 		assert.Nil(t, err)
 		assert.True(t, fields.Valid())
 	}
@@ -286,7 +289,7 @@ func TestLengthOfError(t *testing.T) {
 	g := G{}
 
 	val := strut.NewValidator()
-	val.Checks("length_of", Validator)
+	val.Add("length_of", Validator)
 
 	for _, v := range []struct {
 		i interface{}
@@ -300,7 +303,7 @@ func TestLengthOfError(t *testing.T) {
 		{f, `strconv.ParseInt: parsing "a": invalid syntax`},
 		{g, "error: tag: unprocessable value `:`"},
 	} {
-		_, err := val.Validates(v.i)
+		_, err := val.Check(v.i)
 		assert.Equal(t, err.Error(), v.e)
 	}
 }

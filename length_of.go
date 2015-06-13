@@ -1,68 +1,75 @@
 package lengthof
 
-import "fmt"
-import "reflect"
-import "strconv"
-import "strings"
-import "github.com/gostrut/invalid"
-import . "github.com/nowk/go-calm"
+import (
+	"fmt"
+	"reflect"
+	"strconv"
+	"strings"
+
+	"gopkg.in/gostrut/strut.v1/invalid"
+	. "gopkg.in/nowk/go-calm.v1"
+)
 
 // Validator of lengthof validates the length of a field
-func Validator(name, tagStr string, vo *reflect.Value) (invalid.Field, error) {
+func Validator(n, t string, v *reflect.Value) (invalid.Field, error) {
 	var z int64
-	if err := Calm(func() {
-		z = int64(vo.Len())
-	}); err != nil {
+
+	err := Calm(func() {
+		z = int64(v.Len())
+	})
+	if err != nil {
 		return nil, err
 	}
 
-	var split []string
-	if tagStr != ":" {
-		split = strings.Split(tagStr, ":")
+	var sp []string
+	if t != ":" {
+		sp = strings.Split(t, ":")
 	}
 
-	switch len(split) {
+	switch len(sp) {
 	case 1:
-		n, err := parseInt(split[0])
+		i, err := parseInt(sp[0])
 		if err != nil {
 			return nil, err
 		}
 
-		if z != n {
-			return LengthOfExactError{name: name, n: n}, nil
+		if z != i {
+			return LengthOfExactError{&field{n}, i}, nil
 		}
 
 	case 2:
-		i, err := parseInt(split[0])
+		i, err := parseInt(sp[0])
 		if err != nil {
 			return nil, err
 		}
 
-		n, err := parseInt(split[1])
+		j, err := parseInt(sp[1])
 		if err != nil {
 			return nil, err
 		}
 
 		if i == 0 {
-			if !(z <= n) {
-				return LengthOfLessError{name: name, n: n}, nil
+			if !(z <= j) {
+				return LengthOfLessError{&field{n}, j}, nil
 			}
+
 			break
 		}
 
-		if n == 0 {
+		if j == 0 {
 			if !(z >= i) {
-				return LengthOfGreaterError{name: name, n: i}, nil
+				return LengthOfGreaterError{&field{n}, i}, nil
 			}
+
 			break
 		}
 
-		if !(z >= i && z <= n) {
-			return LengthOfRangeError{name: name, n: i, m: n}, nil
+		if !(z >= i && z <= j) {
+			return LengthOfRangeError{&field{n}, i, j}, nil
 		}
 
 	default:
-		return nil, fmt.Errorf("error: tag: unprocessable value `%s`", tagStr)
+		return nil, fmt.Errorf("error: tag: unprocessable value `%s`", t)
 	}
 
 	return nil, nil
