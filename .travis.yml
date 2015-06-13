@@ -1,13 +1,12 @@
 language: "go"
 install:
-  - go get github.com/nowk/assert
-  - go get github.com/nowk/go-calm
-  - go get github.com/gostrut/strut
-  - go get github.com/gostrut/invalid
-  - go get github.com/gostrut/validator
+  - go get gopkg.in/nowk/assert.v2
+  - go get gopkg.in/nowk/go-calm.v1
+  - go get gopkg.in/gostrut/strut.v1
 go:
   - "1.0"
   - "1.1"
   - "1.2"
   - "1.3"
+  - "1.4"
   - "tip"
